@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/apiConfig';
 
 export default function UserProfile({ onClose }) {
     const [user, setUser] = useState(null);
@@ -19,7 +20,7 @@ export default function UserProfile({ onClose }) {
     const loadUserProfile = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/user/profile', {
+            const response = await fetch(`${API_BASE_URL}/user/profile`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -56,7 +57,7 @@ export default function UserProfile({ onClose }) {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/user/profile', {
+            const response = await fetch(`${API_BASE_URL}/user/profile`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,

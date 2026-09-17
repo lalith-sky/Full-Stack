@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/apiConfig';
 
 export default function AddressManager({ userEmail, onSelectAddress }) {
     const [addresses, setAddresses] = useState([]);
@@ -20,7 +21,7 @@ export default function AddressManager({ userEmail, onSelectAddress }) {
 
     const fetchAddresses = async () => {
         try {
-            const res = await fetch(`http://localhost:8080/api/addresses?email=${userEmail}`);
+            const res = await fetch(`${API_BASE_URL}/addresses?email=${userEmail}`);
             const data = await res.json();
             setAddresses(data);
         } catch (err) {
@@ -31,7 +32,7 @@ export default function AddressManager({ userEmail, onSelectAddress }) {
     const handleAddAddress = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`http://localhost:8080/api/addresses?email=${userEmail}`, {
+            const res = await fetch(`${API_BASE_URL}/addresses?email=${userEmail}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newAddress)
@@ -57,7 +58,7 @@ export default function AddressManager({ userEmail, onSelectAddress }) {
 
     const setDefaultAddress = async (id) => {
         try {
-            await fetch(`http://localhost:8080/api/addresses/${id}/default?email=${userEmail}`, {
+            await fetch(`${API_BASE_URL}/addresses/${id}/default?email=${userEmail}`, {
                 method: 'PUT'
             });
             fetchAddresses();
@@ -69,7 +70,7 @@ export default function AddressManager({ userEmail, onSelectAddress }) {
     const deleteAddress = async (id) => {
         if (window.confirm('Delete this address?')) {
             try {
-                await fetch(`http://localhost:8080/api/addresses/${id}`, {
+                await fetch(`${API_BASE_URL}/addresses/${id}`, {
                     method: 'DELETE'
                 });
                 fetchAddresses();

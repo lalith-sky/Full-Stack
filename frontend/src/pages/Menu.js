@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/apiConfig";
 
 export default function Menu() {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ export default function Menu() {
 
         const fetchRestaurant = async () => {
             try {
-                const res = await fetch(`http://localhost:8080/api/restaurants/${restaurantId}`, {
+                const res = await fetch(`${API_BASE_URL}/restaurants/${restaurantId}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -53,7 +54,7 @@ export default function Menu() {
 
         const fetchMenu = async () => {
             try {
-                const res = await fetch(`http://localhost:8080/api/menus/restaurant/${restaurantId}`, {
+                const res = await fetch(`${API_BASE_URL}/menus/restaurant/${restaurantId}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
 

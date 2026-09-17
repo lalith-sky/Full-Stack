@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from '../config/apiConfig';
 
 export default function RestaurantLogin() {
     const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function RestaurantLogin() {
 
         try {
             const endpoint = isLogin ? '/api/restaurant/login' : '/api/restaurant/register';
-            const res = await fetch(`http://localhost:8080${endpoint}`, {
+            const res = await fetch(`${BACKEND_URL}${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

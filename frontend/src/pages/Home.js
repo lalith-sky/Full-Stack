@@ -4,6 +4,7 @@ import LiveLocationDetector from "../components/LiveLocationDetector";
 import RewardsSystem from "../components/RewardsSystem";
 import RestaurantCard from "../components/RestaurantCard";
 import FloatingChatButton from "../components/FloatingChatButton";
+import { API_BASE_URL } from "../config/apiConfig";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ export default function Home() {
         setError("");
         
         try {
-            const response = await fetch("http://localhost:8080/api/restaurants", {
+            const response = await fetch(`${API_BASE_URL}/restaurants`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"

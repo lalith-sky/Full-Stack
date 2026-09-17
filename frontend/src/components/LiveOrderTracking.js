@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { API_BASE_URL } from '../config/apiConfig';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -31,7 +32,7 @@ const LiveOrderTracking = ({ orderId }) => {
 
     const fetchOrderDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/orders/${orderId}`, {
+            const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 

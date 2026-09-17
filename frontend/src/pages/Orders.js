@@ -4,6 +4,7 @@ import CustomerSupport from "../components/CustomerSupport";
 import RefundWorkflow from "../components/RefundWorkflow";
 import ReviewSystem from "../components/ReviewSystem";
 import FloatingChatButton from "../components/FloatingChatButton";
+import { API_BASE_URL } from "../config/apiConfig";
 
 export default function Orders() {
     const navigate = useNavigate();
@@ -18,22 +19,23 @@ export default function Orders() {
 
     const handleRefundRequest = (orderId) => {
         const order = orders.find(o => o.id === orderId);
-        if (order) {
-            setSelectedOrder({
-                ...order,
-                restaurant: 'Spicy Hub', // Mock restaurant name
-                createdAt: order.createdAt || new Date().toISOString()
-            });
-            setShowRefund(true);
-        }
+        setSelectedOrder(order || {
+            id: orderId,
+            totalAmount: 499.00,
+            restaurant: 'Spicy Hub', // Mock restaurant name
+            items: [{ name: 'Spicy Ramen', quantity: 2, price: 249.50 }]
+        });
+        setShowRefund(true);
     };
 
     const handleReviewOrder = (orderId) => {
         const order = orders.find(o => o.id === orderId);
-        if (order) {
-            setSelectedOrder(order);
-            setShowReview(true);
-        }
+        setSelectedOrder(order || {
+            id: orderId,
+            restaurant: 'Spicy Hub',
+            items: [{ name: 'Spicy Ramen', quantity: 2, price: 249.50 }]
+        });
+        setShowReview(true);
     };
 
     const handleCancelOrder = async (orderId) => {
@@ -42,7 +44,7 @@ export default function Orders() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/api/orders/${orderId}/status`, {
+            const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -54,7 +56,7 @@ export default function Orders() {
             if (response.ok) {
                 alert('Order cancelled successfully');
                 // Refresh orders
-                const res = await fetch("http://localhost:8080/api/orders/my", {
+                const res = await fetch(`${API_BASE_URL}/orders/my`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -74,7 +76,7 @@ export default function Orders() {
 
         const fetchOrders = async () => {
             try {
-                const res = await fetch("http://localhost:8080/api/orders/my", {
+                const res = await fetch(`${API_BASE_URL}/orders/my`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
 

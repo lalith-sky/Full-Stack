@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config/apiConfig';
 
 export default function PromoCodeInput({ orderAmount, onPromoApplied }) {
     const [promoCode, setPromoCode] = useState('');
@@ -16,7 +17,7 @@ export default function PromoCodeInput({ orderAmount, onPromoApplied }) {
         setMessage('');
 
         try {
-            const res = await fetch('http://localhost:8080/api/promo/validate', {
+            const res = await fetch(`${API_BASE_URL}/promo/validate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: promoCode.toUpperCase(), orderAmount })

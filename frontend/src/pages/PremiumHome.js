@@ -8,6 +8,7 @@ import SmartSearchBar from "../components/SmartSearchBar";
 import CraveSwipe from "../components/CraveSwipe";
 import LiveLocationDetector from "../components/LiveLocationDetector";
 import GreenImpactDashboard from "../components/GreenImpactDashboard";
+import { API_BASE_URL } from "../config/apiConfig";
 
 export default function PremiumHome() {
     const [restaurants, setRestaurants] = useState([]);
@@ -68,7 +69,7 @@ export default function PremiumHome() {
     const fetchAllMenus = async (loadedRestaurants) => {
         try {
             const menuPromises = loadedRestaurants.map(r => 
-                fetch(`http://localhost:8080/api/menus/restaurant/${r.id}`, {
+                fetch(`${API_BASE_URL}/menus/restaurant/${r.id}`, {
                     headers: { 
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
@@ -94,7 +95,7 @@ export default function PremiumHome() {
         setError("");
         
         try {
-            const response = await fetch("http://localhost:8080/api/restaurants", {
+            const response = await fetch(`${API_BASE_URL}/restaurants`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json"

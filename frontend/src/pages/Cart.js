@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BillBreakdown from "../components/BillBreakdown";
+import { API_BASE_URL } from "../config/apiConfig";
 
 export default function Cart() {
     const navigate = useNavigate();
@@ -108,7 +109,7 @@ export default function Cart() {
                 deliveryLongitude: 78.4071
             };
 
-            const res = await fetch("http://localhost:8080/api/orders", {
+            const res = await fetch(`${API_BASE_URL}/orders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

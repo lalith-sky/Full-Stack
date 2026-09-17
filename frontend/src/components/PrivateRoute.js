@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { API_BASE_URL } from '../config/apiConfig';
 
 const PrivateRoute = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -18,7 +19,7 @@ const PrivateRoute = ({ children }) => {
                 }
 
                 // Validate token with backend
-                const response = await fetch('http://localhost:8080/api/auth/validate', {
+                const response = await fetch(`${API_BASE_URL}/auth/validate`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

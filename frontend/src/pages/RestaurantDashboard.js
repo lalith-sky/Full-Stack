@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config/apiConfig';
 
 export default function RestaurantDashboard() {
     const navigate = useNavigate();
@@ -39,15 +40,17 @@ export default function RestaurantDashboard() {
         fetchOrders();
         fetchMenu(); // Initial fetch
         fetchAnalytics();
-        // Poll for new orders every 30 seconds
-        const interval = setInterval(fetchOrders, 30000);
+        // Poll for new orders every 10 seconds
+        const interval = setInterval(() => {
+            fetchOrders();
+        }, 10000);
         return () => clearInterval(interval);
     }, [token, navigate]);
 
     const fetchMenu = async () => {
         setMenuLoading(true);
         try {
-            const res = await fetch('http://localhost:8080/api/partner/menu', {
+            const res = await fetch(`${API_BASE_URL}/partner/menu`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -64,7 +67,7 @@ export default function RestaurantDashboard() {
     const fetchAnalytics = async () => {
         setAnalyticsLoading(true);
         try {
-            const res = await fetch('http://localhost:8080/api/partner/analytics', {
+            const res = await fetch(`${API_BASE_URL}/partner/analytics`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -81,7 +84,7 @@ export default function RestaurantDashboard() {
     const handleAddMenuItem = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:8080/api/partner/menu', {
+            const res = await fetch(`${API_BASE_URL}/partner/menu`, {
                 method: 'POST',
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -104,7 +107,7 @@ export default function RestaurantDashboard() {
 
     const handleToggleAvailability = async (itemId) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/partner/menu/${itemId}/toggle-availability`, {
+            const res = await fetch(`${API_BASE_URL}/partner/menu/${itemId}/toggle-availability`, {
                 method: 'PATCH',
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -119,7 +122,7 @@ export default function RestaurantDashboard() {
     const handleDeleteMenuItem = async (itemId) => {
         if (!window.confirm("Are you sure you want to delete this item?")) return;
         try {
-            const res = await fetch(`http://localhost:8080/api/partner/menu/${itemId}`, {
+            const res = await fetch(`${API_BASE_URL}/partner/menu/${itemId}`, {
                 method: 'DELETE',
                 headers: { "Authorization": `Bearer ${token}` }
             });
@@ -133,7 +136,7 @@ export default function RestaurantDashboard() {
 
     const fetchRestaurantData = async () => {
         try {
-            const res = await fetch('http://localhost:8080/api/restaurant/profile', {
+            const res = await fetch(`${API_BASE_URL}/restaurant/profile`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -147,7 +150,7 @@ export default function RestaurantDashboard() {
 
     const fetchOrders = async () => {
         try {
-            const res = await fetch('http://localhost:8080/api/restaurant/orders', {
+            const res = await fetch(`${API_BASE_URL}/restaurant/orders`, {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             if (res.ok) {
@@ -178,7 +181,7 @@ export default function RestaurantDashboard() {
 
     const updateOrderStatus = async (orderId, newStatus) => {
         try {
-            const res = await fetch(`http://localhost:8080/api/restaurant/orders/${orderId}/status`, {
+            const res = await fetch(`${API_BASE_URL}/restaurant/orders/${orderId}/status`, {
                 method: 'PUT',
                 headers: {
                     "Authorization": `Bearer ${token}`,

@@ -1,336 +1,152 @@
-# BiteRush - Full Stack Food Delivery Application
+# 🍽️ BiteRush (FoodieHub) - Full-Stack Food Delivery Platform
 
-A modern, full-stack food delivery application built with **React** frontend and **Spring Boot** backend, featuring **Email/Password Authentication**, **MySQL Database**, **Advanced Features** like Wallet, Referrals, and Subscriptions.
+Welcome to **BiteRush**, a premium full-stack food delivery web application built with **React 19**, **Spring Boot 3 (Java 17)**, and **MySQL / H2 Database**.
 
-## 🚀 Quick Start
+---
 
-### Initialize Sample Data (Choose One Method)
+## 📌 Executive Summary & Architecture
 
-**Method 1: HTML Page (Easiest!)**
-1. Open `INITIALIZE_DATA.html` in your browser
-2. Click "Initialize Sample Data" button
-3. Done! ✅
+BiteRush is an end-to-end food delivery ecosystem featuring a **Customer Application**, a **Restaurant Partner Portal**, and an **AI-driven Recommendation & Tracking Engine**.
 
-**Method 2: Using curl**
-```bash
-curl -X POST http://localhost:8080/api/init-data
-```
+### 🛠️ Technology Stack
+- **Frontend**: React 19, React Router v7, Framer Motion, Leaflet Maps, Material UI Icons, Capacitor (Mobile Native Support)
+- **Backend**: Java 17, Spring Boot 3.2.12, Spring Security (JWT Auth), Spring Data JPA, Hibernate
+- **Database**: MySQL 8.x / H2 In-Memory Database (Development fallback)
+- **Containerization & Deployment**: Docker, Docker Compose, Render (Backend + DB Blueprint), Vercel (Frontend SPA)
 
-This will add:
-- 8 Restaurants (Pizza Palace, Spice Garden, Burger Barn, Sushi Station, Taco Fiesta, Noodle House, Biryani Blues, Cafe Delight)
-- 48 Menu Items (6 per restaurant)
-- 7 Promo Codes (FIRST50, SAVE20, WELCOME, etc.)
+---
 
-See `QUICK_START.md` for detailed instructions.
+## ✨ Key Features & Capabilities
 
-## 🎯 Features Completed
+### 1. 🛒 Customer Portal
+- **Cinematic Authentication**: Glassmorphic UI for user login and registration with JWT authentication.
+- **Smart Restaurant Browsing**: Search by name, filter by cuisine (Indian, Italian, Chinese, Thai, etc.), price range, rating, or vegetarian preferences.
+- **AI-Powered Premium Home (`/premium-home`)**: AI taste match scores, crave swipe card stack, and personalized recommendations.
+- **Interactive Menu & Cart**: Add items with quantity controls, custom instructions, bill breakdown, eco-friendly delivery toggles, and driver tip support.
+- **Delivery Address Manager**: Add, edit, set default, and manage multiple delivery addresses with landmark and pincode support.
+- **Promo Code Engine**: Real-time coupon code validation and discount calculations.
+- **Live Order Tracking**: Interactive Leaflet maps displaying real-time delivery rider simulation, polyline route, ETA countdown, and status badges (`PENDING`, `PREPARING`, `OUT_FOR_DELIVERY`, `DELIVERED`).
+- **Green Impact Dashboard**: Track carbon footprint savings (CO₂e reduction) for eco-friendly deliveries.
 
-### ✅ Core Features
-- **Email/Password Authentication** - Secure JWT-based authentication
-- **Restaurant Management** - Browse 8 sample restaurants with real data
-- **Menu System** - 48 menu items with categories, pricing, and images
-- **Shopping Cart** - Add/remove items, quantity management
-- **Order Management** - Place orders, view order history, track status
-- **User Profiles** - Enhanced profile modal with 5 tabs
+### 2. 🏪 Restaurant Partner Portal (`/restaurant-login` & `/restaurant-dashboard`)
+- **Partner Authentication**: Dedicated registration and login for restaurant owners.
+- **Live Order Management**: Real-time order queue with status toggle buttons (`PREPARING`, `OUT_FOR_DELIVERY`, `DELIVERED`).
+- **Menu Management**: Add new menu items, upload image URLs, edit pricing, toggle item availability, or delete items.
+- **Revenue & Analytics**: Monitor daily orders, revenue statistics, average order value, and top-selling dishes.
 
-### ✅ Customer Features
-- **Address Management** - Save multiple delivery addresses with default selection
-- **Favorites System** - Save favorite restaurants and menu items
-- **Review & Rating** - Rate orders with overall, food, delivery, packaging ratings
-- **Promo Codes** - Apply discount coupons (7 sample codes included)
-- **Order Tracking** - Real-time order status updates
+---
 
-### ✅ Advanced Features (Backend Ready)
-- **Digital Wallet** - Balance tracking, transactions, loyalty points
-- **Referral System** - Generate codes, track referrals, earn rewards
-- **Subscription Plans** - Basic/Premium/Gold monthly plans
-- **Wallet Transactions** - Complete transaction history
+## ⚡ End-to-End Dynamic Configuration & Production Enhancements
 
-### ✅ Restaurant Features
-- **Restaurant Authentication** - Separate login for restaurant owners
-- **Restaurant Dashboard** - Manage orders and menu items
-- **Menu Management** - Add/edit/delete menu items
+1. **Centralized Frontend API Engine (`frontend/src/config/apiConfig.js`)**:
+   - Automatically detects `process.env.REACT_APP_API_URL` when deployed to Vercel.
+   - Falls back gracefully to `http://localhost:8080/api` (Web) or `http://10.0.2.2:8080/api` (Android Capacitor emulator).
+   - Eliminates all hardcoded `localhost:8080` strings across 18+ components and pages.
 
-### ✅ Technical Features
-- **RESTful APIs** - Comprehensive backend with 11+ controllers
-- **MySQL Database** - 13 tables with proper relationships
-- **JPA/Hibernate** - Entity management with repositories
-- **JWT Security** - Secure authentication and authorization
-- **React Portal** - Modal rendering for better UX
-- **Modern UI** - Glassmorphism effects, gradients, responsive design
+2. **Flexible Backend CORS Policy (`SecurityConfig.java`)**:
+   - Reads `@Value("${cors.allowed-origins:*}")` dynamically from environment variables.
+   - Supports production Vercel domains, wildcard origin patterns (`*`), and localhost development ports.
 
-## 📍 Sample Restaurants (Hyderabad)
+3. **Dynamic Spring Properties (`backend/src/main/resources/application.properties`)**:
+   - Parameterized database connections: `${SPRING_DATASOURCE_URL}`, `${SPRING_DATASOURCE_USERNAME}`, `${SPRING_DATASOURCE_PASSWORD}`.
+   - Configurable server port `${PORT:8080}` and `${JWT_SECRET}`.
 
-### 8 Restaurants Included:
-1. **Pizza Palace** (Italian) - 4.5⭐ - MG Road, Banjara Hills
-2. **Spice Garden** (Indian) - 4.7⭐ - Jubilee Hills Road
-3. **Burger Barn** (American) - 4.3⭐ - Gachibowli
-4. **Sushi Station** (Japanese) - 4.8⭐ - HITEC City
-5. **Taco Fiesta** (Mexican) - 4.4⭐ - Madhapur
-6. **Noodle House** (Chinese) - 4.6⭐ - Kondapur
-7. **Biryani Blues** (Indian) - 4.9⭐ - Old City
-8. **Cafe Delight** (Continental) - 4.2⭐ - Begumpet
+---
 
-Each restaurant includes:
-- 6 menu items with realistic pricing (₹49 - ₹549)
-- Mix of veg and non-veg options
-- Bestseller items marked
-- Delivery time and fees
-- Accurate delivery information and ratings
+## 🚀 Quick Start & Local Setup
 
-## Technology Stack
+### 1. Prerequisites
+- **Node.js**: v18+ and `npm`
+- **Java JDK**: Version 17+
+- **MySQL Server** (Optional for local persistent DB, H2 is supported as fallback)
 
-### Backend
-- **Java 17** - Modern Java features
-- **Spring Boot 3.2.12** - Latest Spring framework
-- **Spring Security** - Authentication & authorization
-- **Spring Data JPA** - Database operations
-- **MySQL/H2** - Database support
-- **JJWT 0.12.3** - JWT token handling
-- **Maven** - Dependency management
-
-### Frontend
-- **React 19** - Modern React with hooks
-- **React Router v7** - Client-side routing
-- **Material-UI** - Modern UI components
-- **Google OAuth** - Social authentication
-- **Fetch API** - HTTP client
-- **CSS3** - Responsive styling
-
-## Prerequisites
-
-- **Java 17+** installed
-- **Node.js 16+** with npm
-- **MySQL 8.0+** (optional - H2 in-memory DB included)
-- **Git** for version control
-
-## Quick Start
-
-### 1. Clone Repository
-```bash
-git clone https://github.com/Yeshwanth-45/Full-Stack.git
-cd Full-Stack
-```
-
-### 2. Start Backend
+### 2. Backend Setup
 ```bash
 cd backend
-./mvnw spring-boot:run
-# Windows: .\mvnw.cmd spring-boot:run
+./mvnw clean spring-boot:run
 ```
+- Server starts on `http://localhost:8080`
+- Test API endpoint: `http://localhost:8080/api/test`
+- Data Initialization endpoint: `POST http://localhost:8080/api/init-data`
 
-### 3. Start Frontend
+### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm start
 ```
-
-### 4. Access Application
-- **Frontend:** http://localhost:3000
-- **Backend API:** http://localhost:8080
-- **H2 Console:** http://localhost:8080/h2-console
-
-## How to Test
-
-### OTP Authentication Flow
-1. Open http://localhost:3000
-2. Enter phone number (e.g., `9876543210`)
-3. Click "Send OTP"
-4. Check backend console for OTP code
-5. Enter OTP and verify
-6. Successfully logged in!
-
-### Google Sign-In
-1. Click "Google Sign-In" button
-2. Select your Google account
-3. Automatically logged in and redirected
-
-## Project Structure
-
-```
-Full-Stack/
-├── backend/                    # Spring Boot Application
-│   ├── src/main/java/com/example/backend/
-│   │   ├── controller/         # REST Controllers
-│   │   ├── service/           # Business Logic
-│   │   ├── entity/            # JPA Entities
-│   │   ├── repository/        # Data Access Layer
-│   │   ├── dto/               # Data Transfer Objects
-│   │   └── security/          # Security Configuration
-│   ├── pom.xml               # Maven Dependencies
-│   └── mvnw, mvnw.cmd        # Maven Wrapper
-│
-├── frontend/                   # React Application
-│   ├── src/
-│   │   ├── pages/             # React Pages
-│   │   ├── components/        # Reusable Components
-│   │   └── services/          # API Services
-│   ├── package.json          # npm Dependencies
-│   └── public/               # Static Assets
-│
-└── Documentation/             # Comprehensive Guides
-    ├── QUICK_START.md
-    ├── TESTING_OTP.md
-    ├── IMPLEMENTATION_SUMMARY.md
-    └── [8 more guides...]
-```
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/send-otp` - Send OTP to phone
-- `POST /api/auth/verify-otp` - Verify OTP & get JWT
-- `POST /api/auth/google` - Google OAuth login
-
-### Protected Routes (Require JWT)
-- `GET /api/menu` - Get restaurant menus
-- `GET /api/orders` - Get user orders
-- `POST /api/orders` - Create new order
-- `GET /api/restaurants` - Get restaurants
-
-## Configuration
-
-### Backend Configuration
-**File:** `backend/src/main/resources/application.properties`
-```properties
-# Database Configuration
-spring.datasource.url=jdbc:h2:mem:foodapp
-spring.jpa.hibernate.ddl-auto=create-drop
-
-# JWT Configuration (Change for production)
-jwt.secret=your_secret_key_here
-jwt.expiration=86400000
-
-# Server Configuration
-server.port=8080
-```
-
-### Frontend Configuration
-**File:** `frontend/src/index.js`
-```javascript
-// Google OAuth Configuration
-<GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-```
-
-## Security Notes
-
-### For Development
-- OTP codes are logged to backend console
-- JWT secret is hardcoded (change for production)
-- H2 in-memory database (data resets on restart)
-- CORS allows localhost:3000
-
-### For Production
-1. **Change JWT Secret** in `JwtUtil.java`
-2. **Setup SMS Provider** (Twilio, AWS SNS)
-3. **Configure MySQL** database
-4. **Update CORS** settings
-5. **Use Environment Variables** for secrets
-
-## Documentation
-
-Comprehensive documentation available:
-
-- **QUICK_START.md** - Step-by-step setup guide
-- **TESTING_OTP.md** - Complete testing instructions
-- **IMPLEMENTATION_SUMMARY.md** - Technical deep dive
-- **DEVELOPER_REFERENCE.md** - Commands & troubleshooting
-- **GOOGLE_SIGNIN_SETUP.md** - OAuth configuration
-- **And 3 more detailed guides...**
-
-## Testing
-
-### Backend Tests
-```bash
-cd backend
-./mvnw test
-```
-
-### Frontend Tests
-```bash
-cd frontend
-npm test
-```
-
-### Manual Testing
-- Use Postman/cURL for API testing
-- Browser DevTools for frontend debugging
-- H2 Console for database inspection
-
-## Deployment
-
-### Backend Deployment
-```bash
-cd backend
-./mvnw clean package
-java -jar target/backend-0.0.1-SNAPSHOT.jar
-```
-
-### Frontend Deployment
-```bash
-cd frontend
-npm run build
-# Deploy build/ folder to your hosting service
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Author
-
-**Yeshwanth**
-- GitHub: [@Yeshwanth-45](https://github.com/Yeshwanth-45)
-
-## Acknowledgments
-
-- Spring Boot team for the excellent framework
-- React team for the powerful frontend library
-- JWT.io for token standards
-- Material-UI for beautiful components
-
-## Support
-
-For support and questions:
-1. Check the comprehensive documentation in the project
-2. Open an issue on GitHub
-3. Review the troubleshooting guides
-
-## Roadmap
-
-- [ ] Payment Integration (Stripe/PayPal)
-- [ ] Real-time Order Tracking
-- [ ] Push Notifications
-- [ ] Admin Dashboard
-- [ ] Mobile App (React Native)
-- [ ] Delivery Partner App
-- [ ] Analytics Dashboard
+- App opens at `http://localhost:3000`
 
 ---
 
-## Project Status
+## 🌐 Production Deployment Guide
 
-✅ **COMPLETE & PRODUCTION READY**
+### Option 1: Deploy Frontend to Vercel
 
-- Backend: Spring Boot 3.2.12 ✅
-- Frontend: React 19 ✅
-- Authentication: Phone + OTP + Google ✅
-- Database: MySQL/H2 Support ✅
-- Security: JWT + Spring Security ✅
-- Documentation: 100+ pages ✅
-- Testing: Comprehensive guides ✅
-
-**Ready to deploy and scale!**
+1. Go to [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New > Project**.
+2. Import repository `Yeshwanth-45/Full-Stack`.
+3. Configure Project Settings:
+   - **Framework Preset**: `Create React App`
+   - **Root Directory**: `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `build`
+4. Add Environment Variable:
+   - `REACT_APP_API_URL`: Set to your deployed Render backend URL (e.g., `https://foodiehub-backend.onrender.com/api`).
+5. Click **Deploy**. SPA routing is pre-configured via `frontend/vercel.json`.
 
 ---
 
-*Built with care using modern technologies and best practices*
+### Option 2: Deploy Backend & Database to Render
+
+1. Go to [Render Dashboard](https://dashboard.render.com/) and select **New > Blueprint**.
+2. Connect your GitHub repository `Yeshwanth-45/Full-Stack`.
+3. Render automatically detects `render.yaml` and provisions:
+   - **Web Service**: `foodiehub-backend` (using `backend/Dockerfile`)
+   - **Environment Variables**:
+     - `PORT`: `8080`
+     - `CORS_ALLOWED_ORIGINS`: Set to your Vercel URL (e.g. `https://your-app.vercel.app`)
+     - `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`
+4. Click **Apply**.
+
+---
+
+### Option 3: Local/VPS Deployment with Docker Compose
+
+Run the entire stack (MySQL Database + Backend API) using Docker:
+
+```bash
+docker-compose up -d --build
+```
+
+#### Services Spawned:
+- **Backend API**: `http://localhost:8080`
+- **MySQL Database**: `localhost:3306` (Database: `foodiehub`, User: `root`, Password: `rootpassword`)
+
+---
+
+## 📁 Repository Directory Structure
+
+```
+.
+├── backend                     # Java Spring Boot 3 Backend
+│   ├── Dockerfile              # Multi-stage Docker build container
+│   ├── pom.xml                 # Maven dependencies (Java 17)
+│   └── src                     # Controllers, Security, Entities, Services
+├── frontend                    # React 19 Frontend Application
+│   ├── public                  # HTML template & PWA manifest
+│   ├── src
+│   │   ├── components          # Reusable UI components & Live Order Tracking
+│   │   ├── config/apiConfig.js # Centralized API environment resolver
+│   │   ├── pages               # Customer & Partner application routes
+│   │   └── services            # API & Auth services
+│   ├── package.json
+│   └── vercel.json             # Vercel SPA routing configuration
+├── docker-compose.yml          # Local container orchestration
+├── render.yaml                 # Render Infrastructure as Code Blueprint
+└── README.md                   # Consolidated Master Documentation
+```
+
+---
+
+## 📄 License & Credits
+Built by **Yeshwanth-45** as a full-stack food delivery application.

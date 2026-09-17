@@ -1,5 +1,6 @@
 package com.example.backend.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,10 +16,16 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+
+    @Value("${cors.allowed-origins:*}")
+    private String allowedOrigins;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
@@ -40,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/update-images").permitAll()   // <-- update restaurant images
                         .requestMatchers("/api/add-menu-items").permitAll()   // <-- add menu items
                         .requestMatchers("/api/remove-beef-items").permitAll()   // <-- remove beef items
+                        .requestMatchers("/api/promo/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/partner/**").authenticated()
                         .anyRequest().authenticated()
@@ -53,13 +61,21 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Dev-friendly (React dev servers)
-        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("http://localhost:3001");
-        config.addAllowedOrigin("http://localhost:3002");
-
-        // or allow all in DEV
-        // config.addAllowedOriginPattern("*");
+        if (allowedOrigins != null && !allowedOrigins.trim().isEmpty()) {
+            if ("*".equals(allowedOrigins.trim())) {
+                config.addAllowedOriginPattern("*");
+            } else {
+                List<String> origins = Arrays.asList(allowedOrigins.split(","));
+                for (String origin : origins) {
+                    String cleanOrigin = origin.trim();
+                    if (!cleanOrigin.isEmpty()) {
+                        config.addAllowedOrigin(cleanOrigin);
+                    }
+                }
+            }
+        } else {
+            config.addAllowedOriginPattern("*");
+        }
 
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
@@ -81,3 +97,4 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 }
+

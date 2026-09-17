@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/apiConfig";
 
 export default function AuthPage() {
     const navigate = useNavigate();
@@ -77,8 +78,8 @@ export default function AuthPage() {
         setLoading(true);
         try {
             const endpoint = userType === "customer" 
-                ? "http://localhost:8080/api/auth/login"
-                : "http://localhost:8080/api/restaurant/login";
+                ? `${API_BASE_URL}/auth/login`
+                : `${API_BASE_URL}/restaurant/login`;
                 
             const res = await fetch(endpoint, {
                 method: "POST",
@@ -142,7 +143,7 @@ export default function AuthPage() {
 
             setLoading(true);
             try {
-                const res = await fetch("http://localhost:8080/api/auth/register", {
+                const res = await fetch(`${API_BASE_URL}/auth/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -194,7 +195,7 @@ export default function AuthPage() {
 
             setLoading(true);
             try {
-                const res = await fetch("http://localhost:8080/api/restaurant/register", {
+                const res = await fetch(`${API_BASE_URL}/restaurant/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(restaurantData)
