@@ -22,18 +22,19 @@ const analyticsRoutes = require('./routes/analytics.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const HOST = '0.0.0.0';
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN || '*',
     credentials: true
 }));
 
 // Rate limiting
 const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW) * 60 * 1000 || 15 * 60 * 1000,
-    max: parseInt(process.env.RATE_LIMIT_MAX) || 100,
+    windowMs: (parseInt(process.env.RATE_LIMIT_WINDOW) || 15) * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_MAX) || 300,
     message: 'Too many requests from this IP, please try again later.'
 });
 app.use('/api/', limiter);
@@ -56,23 +57,30 @@ if (process.env.NODE_ENV === 'development') {
 app.get('/health', (req, res) => {
     res.status(200).json({
         status: 'success',
-        message: 'FoodieHub API is running',
+        message: 'BiteRush API is running',
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV
+        environment: process.env.NODE_ENV || 'production'
     });
 });
 
-// API routes
-const API_PREFIX = `/api/${process.env.API_VERSION || 'v1'}`;
+// API Route Mounts (Support both /api and /api/v1 prefix)
+const mountRoutes = (prefix) => {
+    app.use(`${prefix}/auth`, authRoutes);
+    app.use(`${prefix}/users`, userRoutes);
+    app.use(`${prefix}/user`, userRoutes);
+    app.use(`${prefix}/restaurants`, restaurantRoutes);
+    app.use(`${prefix}/restaurant`, restaurantRoutes);
+    app.use(`${prefix}/menu`, menuRoutes);
+    app.use(`${prefix}/menus`, menuRoutes);
+    app.use(`${prefix}/orders`, orderRoutes);
+    app.use(`${prefix}/recommendations`, recommendationRoutes);
+    app.use(`${prefix}/admin`, adminRoutes);
+    app.use(`${prefix}/analytics`, analyticsRoutes);
+    app.use(`${prefix}/partner`, restaurantRoutes);
+};
 
-app.use(`${API_PREFIX}/auth`, authRoutes);
-app.use(`${API_PREFIX}/users`, userRoutes);
-app.use(`${API_PREFIX}/restaurants`, restaurantRoutes);
-app.use(`${API_PREFIX}/menu`, menuRoutes);
-app.use(`${API_PREFIX}/orders`, orderRoutes);
-app.use(`${API_PREFIX}/recommendations`, recommendationRoutes);
-app.use(`${API_PREFIX}/admin`, adminRoutes);
-app.use(`${API_PREFIX}/analytics`, analyticsRoutes);
+mountRoutes('/api');
+mountRoutes('/api/v1');
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -91,37 +99,32 @@ const startServer = async () => {
         // Test database connection
         await db.query('SELECT 1');
         logger.info('✅ Database connected successfully');
-
-        // Start server
-        app.listen(PORT, () => {
-            logger.info(`🚀 FoodieHub API server running on port ${PORT}`);
-            logger.info(`📍 Environment: ${process.env.NODE_ENV}`);
-            logger.info(`🔗 API Base URL: http://localhost:${PORT}${API_PREFIX}`);
-        });
     } catch (error) {
-        logger.error('❌ Failed to start server:', error);
-        process.exit(1);
+        logger.warn('⚠️ Database connection check warning:', error.message);
     }
+
+    // Start server
+    app.listen(PORT, HOST, () => {
+        logger.info(`🚀 BiteRush API server running on http://${HOST}:${PORT}`);
+        logger.info(`📍 Environment: ${process.env.NODE_ENV || 'production'}`);
+        logger.info(`🔗 API Base URL: http://${HOST}:${PORT}/api`);
+    });
 };
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
-    logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
-    logger.error(err);
-    process.exit(1);
+    logger.error('UNHANDLED REJECTION! 💥', err);
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
-    logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-    logger.error(err);
-    process.exit(1);
+    logger.error('UNCAUGHT EXCEPTION! 💥', err);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
     logger.info('👋 SIGTERM received. Shutting down gracefully...');
-    db.end();
+    if (db.pool && db.pool.end) db.pool.end();
     process.exit(0);
 });
 
