@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "env": {
+    "REACT_APP_API_URL": "https://full-stack-07s3.onrender.com/api"
+  },
   "builds": [
     {
       "src": "package.json",

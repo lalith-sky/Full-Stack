@@ -1,8 +1,11 @@
 -- FoodieHub Database Schema
 -- MySQL Database for AI-Powered Food Delivery Platform
+-- Aiven: using existing defaultdb database
 
-CREATE DATABASE IF NOT EXISTS foodiehub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE foodiehub;
+-- The following two lines are intentionally disabled because
+-- Aiven already provides the database named defaultdb.
+-- CREATE DATABASE IF NOT EXISTS foodiehub CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- USE foodiehub;
 
 -- =====================================================
 -- USERS TABLE
@@ -133,9 +136,27 @@ CREATE TABLE orders (
     tax DECIMAL(10, 2) DEFAULT 0,
     discount DECIMAL(10, 2) DEFAULT 0,
     final_amount DECIMAL(10, 2) NOT NULL,
-    order_status ENUM('placed', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'cancelled') DEFAULT 'placed',
-    payment_status ENUM('pending', 'paid', 'failed', 'refunded') DEFAULT 'pending',
-    payment_method ENUM('cod', 'card', 'upi', 'wallet') DEFAULT 'cod',
+    order_status ENUM(
+        'placed',
+        'confirmed',
+        'preparing',
+        'ready',
+        'out_for_delivery',
+        'delivered',
+        'cancelled'
+    ) DEFAULT 'placed',
+    payment_status ENUM(
+        'pending',
+        'paid',
+        'failed',
+        'refunded'
+    ) DEFAULT 'pending',
+    payment_method ENUM(
+        'cod',
+        'card',
+        'upi',
+        'wallet'
+    ) DEFAULT 'cod',
     delivery_address TEXT NOT NULL,
     delivery_latitude DECIMAL(10, 8),
     delivery_longitude DECIMAL(11, 8),
@@ -301,7 +322,7 @@ CREATE TABLE analytics (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- REFRESH TOKENS TABLE (for JWT)
+-- REFRESH TOKENS TABLE
 -- =====================================================
 CREATE TABLE refresh_tokens (
     token_id INT PRIMARY KEY AUTO_INCREMENT,

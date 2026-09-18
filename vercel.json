@@ -1,11 +1,23 @@
 {
   "version": 2,
-  "buildCommand": "npm --prefix frontend install && npm --prefix frontend run build",
-  "outputDirectory": "frontend/build",
-  "rewrites": [
+  "env": {
+    "REACT_APP_API_URL": "https://full-stack-07s3.onrender.com/api"
+  },
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "build" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/frontend/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
